@@ -1,4 +1,4 @@
-module github.com/sc7639/network-cli-tool/internal/app/
+module github.com/sc7639/network-cli-tool/internal/app/network-cli
 
 go 1.13
 

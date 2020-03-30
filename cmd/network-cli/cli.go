@@ -3,10 +3,9 @@ package main
 import (
 	"fmt"
 	"log"
-	"net"
 	"os"
 
-	"github.com/sc7639/network-cli-tool/internal/app/command"
+	"github.com/sc7639/network-cli-tool/internal/app/network-cli/command"
 
 	"github.com/urfave/cli"
 )
@@ -25,28 +24,44 @@ func main() {
 
 	app.Commands = []cli.Command{
 		{
-			Name:   "ns",
-			Usage:  "Looks up the Name servers for a Particular Host",
-			Flags:  myFlags,
-			Action: command.NS,
+			Name:  "ns",
+			Usage: "Looks up the Name servers for a Particular Host",
+			Flags: myFlags,
+			Action: func(c *cli.Context) error {
+				nss, err := command.NS(c.String("host"))
+				if err != nil {
+					return err
+				}
+
+				fmt.Print(nss)
+				return nil
+			},
 		},
 		{
-			Name:   "ip",
-			Usage:  "Looks up the IP address for a particular host",
-			Flags:  myFlags,
-			Action: command.IP,
+			Name:  "ip",
+			Usage: "Looks up the IP address for a particular host",
+			Flags: myFlags,
+			Action: func(c *cli.Context) error {
+				ips, err := command.IP(c.String("host"))
+				if err != nil {
+					return err
+				}
+
+				fmt.Print(ips)
+				return nil
+			},
 		},
 		{
 			Name:  "cname",
 			Usage: "Loos up the CNAME for a particular host",
 			Flags: myFlags,
 			Action: func(c *cli.Context) error {
-				cname, err := net.LookupCNAME(c.String("host"))
+				cname, err := command.CNAME(c.String("host"))
 				if err != nil {
 					return err
 				}
 
-				fmt.Println(cname)
+				fmt.Print(cname)
 				return nil
 			},
 		},
@@ -55,15 +70,12 @@ func main() {
 			Usage: "Looks up the MX records for a particular host",
 			Flags: myFlags,
 			Action: func(c *cli.Context) error {
-				mx, err := net.LookupMX(c.String("host"))
+				mxs, err := command.MX(c.String("host"))
 				if err != nil {
 					return err
 				}
 
-				for i := 0; i < len(mx); i++ {
-					fmt.Println(mx[i].Host, mx[i].Pref)
-				}
-
+				fmt.Print(mxs)
 				return nil
 			},
 		},
